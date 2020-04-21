@@ -83,9 +83,9 @@
             audio_list[i].pause();
           }
         }else{
-          const classPrediction =
-            prediction[type].className + ": " + prediction[type].probability.toFixed(2);
-          labelContainer.childNodes[0].innerHTML = classPrediction;
+          // const classPrediction =
+          //   prediction[type].className + ": " + prediction[type].probability.toFixed(2);
+          // labelContainer.childNodes[0].innerHTML = classPrediction;
 
           audio_list[type].play();
           for (let i = 0; i < maxPredictions; i++){
@@ -93,13 +93,6 @@
             audio_list[i].pause();
           }
         }
-
-        // for (let i = 0; i < maxPredictions; i++) {
-        //     const classPrediction =
-        //         prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-        //     labelContainer.childNodes[i].innerHTML = classPrediction;
-        // }
-
 
         // finally draw the poses
         drawPose(pose);
