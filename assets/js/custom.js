@@ -1,3 +1,100 @@
+// 파일 리스트 번호
+var fileIndex = 0;
+// 파일 리스트
+var fileList = new Array();
+
+$(function() {
+    // 파일 드롭 다운
+    fileDropDown();
+});
+
+// 파일 드롭 다운
+function fileDropDown(){
+    var dropZone = $(".dropZone");
+    // var dropZone = document.getElementsByClassName("dropZone");
+
+    dropZone.on('dragenter',function(e){ //드래그 해서 마우스가 올려진 순간
+        e.stopPropagation();
+        e.preventDefault();
+    });
+    dropZone.on('dragleave',function(e){ //마우스가 올려졌다가 빠졌을 때
+        e.stopPropagation();
+        e.preventDefault();
+    });
+    dropZone.on('dragover',function(e){ //마우스를 올려놓고 유지하고 있는 상태
+        e.stopPropagation();
+        e.preventDefault();
+    });
+    dropZone.on('drop',function(e){ //파일을 떨어뜨렸을 때
+        e.preventDefault();
+
+        var files = e.originalEvent.dataTransfer.files;
+        if(files != null){
+            if(files.length < 1){
+                alert("폴더 업로드 불가");
+                return;
+            }
+            selectFile(files)
+        }else{
+            alert("ERROR");
+        }
+    });
+}
+
+// 파일 선택시
+function selectFile(files){
+    // 다중파일 등록
+    if(files != null){
+        for(var i = 0; i < files.length; i++){
+            // 파일 이름
+            var fileName = files[i].name;
+            var fileNameArr = fileName.split("\.");
+            // 확장자
+            var ext = fileNameArr[fileNameArr.length - 1];
+
+            // TODO 재생 가능한 음악 파일 확장자로 바꾸기
+            if($.inArray(ext, ['exe', 'bat', 'sh', 'java', 'jsp', 'html', 'js', 'css', 'xml']) >= 0){
+                // 확장자 체크
+                alert("등록 불가 확장자");
+                break;
+            }else{
+                // 파일 배열에 넣기
+                fileList[fileIndex] = files[i];
+
+                // 업로드 파일 목록 생성
+                addFileList(fileIndex, fileName);
+
+                // 파일 번호 증가
+                fileIndex++;
+            }
+        }
+    }else{
+        alert("ERROR");
+    }
+}
+
+// 업로드 파일 목록 생성
+function addFileList(fileIndex, fileName){
+    var html = "";
+    html += "<tr id='fileTr_" + fileIndex + "'>";
+    html += "    <th class='py-1'>";
+    html +=         fileName + "<a href='#' onclick='deleteFile(" + fileIndex + "); return false;' class='btn text-danger py-0'>삭제</a>"
+    html += "    </th>"
+    html += "</tr>"
+
+    $('#fileTableTbody').append(html);
+}
+
+// 업로드 파일 삭제
+function deleteFile(fIndex){
+
+    // 파일 배열에서 삭제
+    delete fileList[fIndex];
+
+    // 업로드 파일 테이블 목록에서 삭제
+    $("#fileTr_" + fIndex).remove();
+}
+
 // More API functions here:
 // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
@@ -40,6 +137,7 @@ async function loop(timestamp) {
 }
 
 async function predict() {
+  // TODO $(".dropZone")
     const audio_list = [document.getElementById('audio_do'),
                         document.getElementById('audio_re')];
 
