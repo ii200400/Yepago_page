@@ -1,5 +1,5 @@
 // 파일 리스트 번호
-var fileIndex = 0;
+var fileIndex = -1;
 // 파일 리스트
 var fileList = new Array();
 
@@ -34,7 +34,7 @@ function fileDropDown(){
                 alert("폴더 업로드 불가");
                 return;
             }
-            selectFile(files)
+            selectFile(files, e)
         }else{
             alert("ERROR");
         }
@@ -42,7 +42,7 @@ function fileDropDown(){
 }
 
 // 파일 선택시
-function selectFile(files){
+function selectFile(files, e){
     // 다중파일 등록
     if(files != null){
         for(var i = 0; i < files.length; i++){
@@ -52,20 +52,20 @@ function selectFile(files){
             // 확장자
             var ext = fileNameArr[fileNameArr.length - 1];
 
-            // TODO 재생 가능한 음악 파일 확장자로 바꾸기
-            if($.inArray(ext, ['exe', 'bat', 'sh', 'java', 'jsp', 'html', 'js', 'css', 'xml']) >= 0){
-                // 확장자 체크
-                alert("등록 불가 확장자");
-                break;
-            }else{
+            if (($(e.target).attr("id") == "musicDropZone" && $.inArray(ext, ['mp3', 'mp4', 'wav']) >= 0)
+          || ($(e.target).attr("id") == "dataDropZone" && $.inArray(ext, ['json']) >= 0)) {
+                // 파일 번호 증가
+                fileIndex++;
+
                 // 파일 배열에 넣기
                 fileList[fileIndex] = files[i];
 
                 // 업로드 파일 목록 생성
-                addFileList(fileIndex, fileName);
-
-                // 파일 번호 증가
-                fileIndex++;
+                addFileList(fileIndex, fileName, e);
+            }else{
+                // 확장자 체크
+                alert("등록 불가 확장자");
+                break;
             }
         }
     }else{
@@ -74,7 +74,7 @@ function selectFile(files){
 }
 
 // 업로드 파일 목록 생성
-function addFileList(fileIndex, fileName){
+function addFileList(fileIndex, fileName, e){
     var html = "";
     html += "<tr id='fileTr_" + fileIndex + "'>";
     html += "    <th class='py-1'>";
@@ -82,7 +82,12 @@ function addFileList(fileIndex, fileName){
     html += "    </th>"
     html += "</tr>"
 
-    $('#fileTableTbody').append(html);
+    if ($(e.target).attr("id") == "musicDropZone"){
+      $('#musicFileTable').append(html);
+    }else{  //"dataDropZone"
+      $('#dataFileTable').append(html);
+    }
+
 }
 
 // 업로드 파일 삭제

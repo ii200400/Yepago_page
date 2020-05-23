@@ -45,48 +45,38 @@
       <div class="row">
         <div class="col-6">
           <h1 class="my-5">Teachable Machine Pose Model 1</h1>
-          <div class="dropZone btn btn-warning py-4 px-5 mb-3">파일을 끌고와 주세요!</div>
+          <div class="dropZone btn btn-warning py-4 px-5 mb-3" id="musicDropZone">파일을 끌고와 주세요!</div>
           <table class="table table-hover">
             <thead>
               <tr>
                 <th scope="col">파일 이름</th>
               </tr>
             </thead>
-            <tbody class="text-left">
-              <tr>
-                <th class="py-1">1111111111111111111111111</th>
-              </tr>
-              <tr>
-                <th class="py-1">1111111111111111111111111</th>
-              </tr>
-              <tr>
-                <th class="py-1">1111111111111111111111111</th>
-              </tr>
+            <tbody class="text-left" id="musicFileTable">
             </tbody>
           </table>
         </div>
         <div class="col-6">
           <h1 class="my-5">Teachable Machine Pose Model 2</h1>
-          <div class="dropZone btn btn-warning py-4 px-5 mb-3">파일을 끌고와 주세요!</div>
+          <div class="dropZone btn btn-warning py-4 px-5 mb-3" id="dataDropZone">파일을 끌고와 주세요!</div>
           <table class="table table-hover">
             <thead>
               <tr>
                 <th scope="col">파일 이름</th>
               </tr>
             </thead>
-            <tbody class="text-left" id="fileTableTbody">
-              <tr>
+            <tbody class="text-left" id="dataFileTable">
+              <!-- <tr>
                 <th class="py-1">222asdASD2</th>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
       </div>
       <div class="row">
-        <div class="col-12">
-          <div><canvas id="canvas"></canvas></div>
-          <div id="label-container"></div>
-        </div>
+        <!-- TODO 잘되는지 확인좀.. -->
+        <div class="col-12"><canvas id="canvas"></canvas></div>
+        <div id="label-container"></div>
       </div>
       <button type="button" class="btn btn-outline-info btn-pill active mb-5" onclick="init()">카메라 시작</button>
     </div>
