@@ -1,7 +1,9 @@
-// 파일 리스트 번호
-var fileIndex = -1;
-// 파일 리스트
-var fileList = new Array();
+// 파일 해시맵
+var musicList = new Array();
+var dataList = new Array();
+// 파일 고유번호
+var musicFileIndex = 0;
+var dataFileIndex = 0;
 
 $(function() {
     // 파일 드롭 다운
@@ -52,19 +54,34 @@ function selectFile(files, e){
             // 확장자
             var ext = fileNameArr[fileNameArr.length - 1];
 
-            if (($(e.target).attr("id") == "musicDropZone" && $.inArray(ext, ['mp3', 'mp4', 'wav']) >= 0)
-          || ($(e.target).attr("id") == "dataDropZone" && $.inArray(ext, ['json']) >= 0)) {
-                // 파일 번호 증가
-                fileIndex++;
+            if ($(e.target).attr("id") == "musicDropZone") {
+                if ($.inArray(ext, ['mp3', 'mp4', 'wav', 'm4a']) >= 0) {
+                    // 파일 저장
+                    musicList[musicFileIndex] = files[i];
 
-                // 파일 배열에 넣기
-                fileList[fileIndex] = files[i];
+                    // 업로드 파일 목록 생성
+                    addFileList(musicFileIndex, fileName, e);
 
-                // 업로드 파일 목록 생성
-                addFileList(fileIndex, fileName, e);
+                    // 파일 번호 증가
+                    musicFileIndex++;
+                }else{
+                    alert("확장자가 'mp3', 'mp4', 'wav', 'm4a'인 음악 파일만 가능합니다.");
+                }
+
+            }else if ($(e.target).attr("id") == "dataDropZone") {
+                if ($.inArray(fileName, ['metadata.json', 'model.json']) >=0) {
+                    dataList[dataFileIndex] = files[i];
+
+                    addFileList(dataFileIndex, fileName, e);
+
+                    dataFileIndex++;
+                }else {
+                    alert("metadata.json 혹은 model.json 파일만 등록 가능합니다.");
+                }
+
             }else{
                 // 확장자 체크
-                alert("등록 불가 확장자");
+                alert("에러!");
                 break;
             }
         }
@@ -76,9 +93,21 @@ function selectFile(files, e){
 // 업로드 파일 목록 생성
 function addFileList(fileIndex, fileName, e){
     var html = "";
-    html += "<tr id='fileTr_" + fileIndex + "'>";
+
+    if ($(e.target).attr("id") == "musicDropZone"){
+      html += "<tr id='musicFileTr_" + fileIndex + "'>";
+    }else{  //"dataDropZone"
+      html += "<tr id='dataFileTr_" + fileIndex + "'>";
+    }
+
     html += "    <th class='py-1'>";
-    html +=         fileName + "<a href='#' onclick='deleteFile(" + fileIndex + "); return false;' class='btn text-danger py-0'>삭제</a>"
+
+    if ($(e.target).attr("id") == "musicDropZone"){
+      html += fileName + "<a href='#' onclick='deleteMusicFile(" + fileIndex + "); return false;' class='btn text-danger py-0'>삭제</a>"
+    }else{  //"dataDropZone"
+      html += fileName + "<a href='#' onclick='deleteDataFile(" + fileIndex + "); return false;' class='btn text-danger py-0'>삭제</a>"
+    }
+
     html += "    </th>"
     html += "</tr>"
 
@@ -87,17 +116,24 @@ function addFileList(fileIndex, fileName, e){
     }else{  //"dataDropZone"
       $('#dataFileTable').append(html);
     }
-
 }
 
-// 업로드 파일 삭제
-function deleteFile(fIndex){
+// 음악 파일 삭제
+function deleteMusicFile(fIndex){
+    // 음악 파일 배열에서 삭제
+    delete musicList[fIndex];
 
-    // 파일 배열에서 삭제
-    delete fileList[fIndex];
+    // 음악 파일 테이블 목록에서 삭제
+    $("#musicFileTr_" + fIndex).remove();
+}
 
-    // 업로드 파일 테이블 목록에서 삭제
-    $("#fileTr_" + fIndex).remove();
+// 데이터 파일 삭제
+function deleteDataFile(fIndex){
+    // 데이터 파일 배열에서 삭제
+    delete dataList[fIndex];
+
+    // 데이터 파일 테이블 목록에서 삭제
+    $("#dataFileTr_" + fIndex).remove();
 }
 
 // More API functions here:
@@ -117,21 +153,25 @@ async function init() {
     model = await tmPose.load(modelURL, metadataURL);
     maxPredictions = model.getTotalClasses();
 
-    // Convenience function to setup a webcam
-    const size = 200;
-    const flip = true; // whether to flip the webcam
-    webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
-    await webcam.setup(); // request access to the webcam
-    await webcam.play();
-    window.requestAnimationFrame(loop);
+    if (maxPredictions != musicList.length){
+        alerts("음악 파일 수와 모델의 수를 같게 해주세요!");
+    }else{
+        // Convenience function to setup a webcam
+        const size = 200;
+        const flip = true; // whether to flip the webcam
+        webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
+        await webcam.setup(); // request access to the webcam
+        await webcam.play();
+        window.requestAnimationFrame(loop);
 
-    // append/get elements to the DOM
-    const canvas = document.getElementById("canvas");
-    canvas.width = size; canvas.height = size;
-    ctx = canvas.getContext("2d");
-    labelContainer = document.getElementById("label-container");
-    for (let i = 0; i < maxPredictions; i++) { // and class labels
-        labelContainer.appendChild(document.createElement("div"));
+        // append/get elements to the DOM
+        const canvas = document.getElementById("canvas");
+        canvas.width = size; canvas.height = size;
+        ctx = canvas.getContext("2d");
+        labelContainer = document.getElementById("label-container");
+        for (let i = 0; i < maxPredictions; i++) { // and class labels
+            labelContainer.appendChild(document.createElement("div"));
+        }
     }
 }
 
