@@ -1,10 +1,15 @@
 // 파일 해시맵
 var musicList = new Array();
-var dataList = new Array();
+var metadataFile = null;
+var modelFile = null;
 // 파일 고유번호
 var musicFileIndex = 0;
-var dataFileIndex = 0;
+// 카메라 시작 버튼
+let cameraEle = document.getElementById('camera');
+let dataDropZone = document.getElementById('dataDropZone');
+let musicDropZone = document.getElementById('musicDropZone');
 
+// TODO 슬라이더 추가하고 연속재생을 단일재생할지, pause할지 stop할지 정하고 그렇게 만드는 코드 넣기
 $(function() {
     // 파일 드롭 다운
     fileDropDown();
@@ -13,7 +18,6 @@ $(function() {
 // 파일 드롭 다운
 function fileDropDown(){
     var dropZone = $(".dropZone");
-    // var dropZone = document.getElementsByClassName("dropZone");
 
     dropZone.on('dragenter',function(e){ //드래그 해서 마우스가 올려진 순간
         e.stopPropagation();
@@ -54,27 +58,40 @@ function selectFile(files, e){
             // 확장자
             var ext = fileNameArr[fileNameArr.length - 1];
 
+            // 드롭 박스에 따라 각각의 테이블에 목록 생성 및 파일 저장
             if ($(e.target).attr("id") == "musicDropZone") {
                 if ($.inArray(ext, ['mp3', 'mp4', 'wav', 'm4a']) >= 0) {
-                    // 파일 저장
+                    // 음악 파일 저장
                     musicList[musicFileIndex] = files[i];
 
-                    // 업로드 파일 목록 생성
+                    // 음악 파일 목록 생성
                     addFileList(musicFileIndex, fileName, e);
 
-                    // 파일 번호 증가
+                    // 음악 파일 번호 증가
                     musicFileIndex++;
                 }else{
                     alert("확장자가 'mp3', 'mp4', 'wav', 'm4a'인 음악 파일만 가능합니다.");
                 }
 
             }else if ($(e.target).attr("id") == "dataDropZone") {
-                if ($.inArray(fileName, ['metadata.json', 'model.json']) >=0) {
-                    dataList[dataFileIndex] = files[i];
+                if (fileName == 'metadata.json') {
+                  // 메타 데이터 파일 저장 및 목록 생성
+                  if (metadataFile == null) {
+                      metadataFile = files[i];
+                      addFileList(0, fileName, e);
+                  }else{  // 이미 존재하면 알림 생성
+                      alert("metadata.json 파일은 이미 등록되어있습니다.");
+                  }
 
-                    addFileList(dataFileIndex, fileName, e);
+                }else if (fileName == 'model.json') {
+                    // 모델 파일 저장 및 목록 생성
+                    if (modelFile == null) {
+                        modelFile = files[i];
+                        addFileList(1, fileName, e);
+                    }else{
+                        alert("model.json 파일은 이미 등록되어있습니다.");
+                    }
 
-                    dataFileIndex++;
                 }else {
                     alert("metadata.json 혹은 model.json 파일만 등록 가능합니다.");
                 }
@@ -102,6 +119,7 @@ function addFileList(fileIndex, fileName, e){
 
     html += "    <th class='py-1'>";
 
+    // TODO 음악 파일은 임시 재생이 가능하도록 바꾸기
     if ($(e.target).attr("id") == "musicDropZone"){
       html += fileName + "<a href='#' onclick='deleteMusicFile(" + fileIndex + "); return false;' class='btn text-danger py-0'>삭제</a>"
     }else{  //"dataDropZone"
@@ -116,6 +134,9 @@ function addFileList(fileIndex, fileName, e){
     }else{  //"dataDropZone"
       $('#dataFileTable').append(html);
     }
+
+    // dropzone과 카메라 버튼의 타이틀 수정
+    changeTitle()
 }
 
 // 음악 파일 삭제
@@ -125,53 +146,68 @@ function deleteMusicFile(fIndex){
 
     // 음악 파일 테이블 목록에서 삭제
     $("#musicFileTr_" + fIndex).remove();
+
+    // dropzone과 카메라 버튼의 타이틀 수정
+    changeTitle()
 }
 
 // 데이터 파일 삭제
 function deleteDataFile(fIndex){
-    // 데이터 파일 배열에서 삭제
-    delete dataList[fIndex];
+    // 데이터 파일 삭제
+    if (fIndex == 0) {
+        metadataFile = null;
+    }else if (fIndex == 1) {
+        modelFile = null;
+    }
 
     // 데이터 파일 테이블 목록에서 삭제
     $("#dataFileTr_" + fIndex).remove();
+
+    // dropzone과 카메라 버튼의 타이틀 수정
+    changeTitle()
+}
+
+function changeTitle(){
+  if (metadataFile == null) {
+    cameraEle.title = "metadata.json 파일을 등록해 주세요!";
+    cameraEle.disabled = true;
+  }else if (modelFile == null) {
+    cameraEle.title = "model.json 파일을 등록해 주세요!";
+    cameraEle.disabled = true;
+  }else {
+    cameraEle.title = "음악 파일을 모델의 분류 수와 맞게 넣지 않으면 문제가 있을 수 있습니다.\n모르겠다면 그냥 해보세요.";
+    cameraEle.disabled = false;
+  }
 }
 
 // More API functions here:
 // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
 // the link to your model provided by Teachable Machine export panel
-const URL = "./my_model/";
 let model, webcam, ctx, labelContainer, maxPredictions, audio_list;
 
 async function init() {
-    const modelURL = URL + "model.json";
-    const metadataURL = URL + "metadata.json";
-
     // load the model and metadata
     // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
     // Note: the pose library adds a tmPose object to your window (window.tmPose)
-    model = await tmPose.load(modelURL, metadataURL);
+    model = await tmPose.load(URL.createObjectURL(modelFile), URL.createObjectURL(metadataFile));
     maxPredictions = model.getTotalClasses();
 
-    if (maxPredictions != musicList.length){
-        alerts("음악 파일 수와 모델의 수를 같게 해주세요!");
-    }else{
-        // Convenience function to setup a webcam
-        const size = 200;
-        const flip = true; // whether to flip the webcam
-        webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
-        await webcam.setup(); // request access to the webcam
-        await webcam.play();
-        window.requestAnimationFrame(loop);
+    // Convenience function to setup a webcam
+    const size = 200;
+    const flip = true; // whether to flip the webcam
+    webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
+    await webcam.setup(); // request access to the webcam
+    await webcam.play();
+    window.requestAnimationFrame(loop);
 
-        // append/get elements to the DOM
-        const canvas = document.getElementById("canvas");
-        canvas.width = size; canvas.height = size;
-        ctx = canvas.getContext("2d");
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
-        }
+    // append/get elements to the DOM
+    const canvas = document.getElementById("canvas");
+    canvas.width = size; canvas.height = size;
+    ctx = canvas.getContext("2d");
+    labelContainer = document.getElementById("label-container");
+    for (let i = 0; i < maxPredictions; i++) { // and class labels
+        labelContainer.appendChild(document.createElement("div"));
     }
 }
 
