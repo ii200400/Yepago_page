@@ -1,7 +1,9 @@
-// 파일 해시맵
+// 음악 파일 리스트
 var musicList = new Array();
+// 데이터 파일
 var metadataFile = null;
 var modelFile = null;
+var weightsFile = null;
 // 파일 고유번호
 var musicFileIndex = 0;
 // 카메라 시작 버튼
@@ -92,8 +94,17 @@ function selectFile(files, e){
                         alert("model.json 파일은 이미 등록되어있습니다.");
                     }
 
+                }else if (fileName == 'weights.bin') {
+                    // 모델 파일 저장 및 목록 생성
+                    if (weightsFile == null) {
+                        weightsFile = files[i];
+                        addFileList(2, fileName, e);
+                    }else{
+                        alert("weights.bin 파일은 이미 등록되어있습니다.");
+                    }
+
                 }else {
-                    alert("metadata.json 혹은 model.json 파일만 등록 가능합니다.");
+                    alert("metadata.json, model.json, weights.bin 파일만 등록 가능합니다.");
                 }
 
             }else{
@@ -158,6 +169,8 @@ function deleteDataFile(fIndex){
         metadataFile = null;
     }else if (fIndex == 1) {
         modelFile = null;
+    }else if (fIndex == 2) {
+        weightsFile = null;
     }
 
     // 데이터 파일 테이블 목록에서 삭제
@@ -173,6 +186,9 @@ function changeTitle(){
     cameraEle.disabled = true;
   }else if (modelFile == null) {
     cameraEle.title = "model.json 파일을 등록해 주세요!";
+    cameraEle.disabled = true;
+  }else if (weightsFile == null) {
+    cameraEle.title = "weights.bin 파일을 등록해 주세요!";
     cameraEle.disabled = true;
   }else {
     cameraEle.title = "음악 파일을 모델의 분류 수와 맞게 넣지 않으면 문제가 있을 수 있습니다.\n모르겠다면 그냥 해보세요.";
@@ -190,11 +206,13 @@ async function init() {
     // load the model and metadata
     // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
     // Note: the pose library adds a tmPose object to your window (window.tmPose)
-    model = await tmPose.load(URL.createObjectURL(modelFile), URL.createObjectURL(metadataFile));
+
+    // TODO weight.bin 파일 추가하기
+    model = await tmPose.loadFromFiles(modelFile, weightsFile, metadataFile);
     maxPredictions = model.getTotalClasses();
 
     // Convenience function to setup a webcam
-    const size = 200;
+    const size = 600;
     const flip = true; // whether to flip the webcam
     webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
     await webcam.setup(); // request access to the webcam
