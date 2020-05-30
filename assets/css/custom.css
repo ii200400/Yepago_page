@@ -1,0 +1,9 @@
+.dropZone{
+  border: 2px dashed #7a00cc;
+  background-color: #f5e6ff;
+  border-radius: 4px;
+}
+#canvas{
+  border: 2px #cc80ff;
+  border-radius: 4px;
+}

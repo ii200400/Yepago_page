@@ -24,10 +24,14 @@ function fileDropDown(){
     dropZone.on('dragenter',function(e){ //드래그 해서 마우스가 올려진 순간
         e.stopPropagation();
         e.preventDefault();
+        // css 스타일 변경
+        $(event.target).css('background-color','#ebccff');
     });
     dropZone.on('dragleave',function(e){ //마우스가 올려졌다가 빠졌을 때
         e.stopPropagation();
         e.preventDefault();
+
+        $(event.target).css('background-color','#f5e6ff');
     });
     dropZone.on('dragover',function(e){ //마우스를 올려놓고 유지하고 있는 상태
         e.stopPropagation();
@@ -35,6 +39,8 @@ function fileDropDown(){
     });
     dropZone.on('drop',function(e){ //파일을 떨어뜨렸을 때
         e.preventDefault();
+
+        $(event.target).css('background-color','#f5e6ff');
 
         var files = e.originalEvent.dataTransfer.files;
         if(files != null){
@@ -200,7 +206,7 @@ function changeTitle(){
 // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
 // the link to your model provided by Teachable Machine export panel
-let model, webcam, ctx, labelContainer, maxPredictions, audio_list;
+let model, webcam, ctx, labelContainer, maxPredictions;
 
 async function init() {
     // load the model and metadata
@@ -236,9 +242,6 @@ async function loop(timestamp) {
 }
 
 async function predict() {
-  // TODO $(".dropZone")
-    const audio_list = [document.getElementById('audio_do'),
-                        document.getElementById('audio_re')];
 
     function get_type(){
       for (let i = 0; i < maxPredictions; i++){
@@ -256,19 +259,17 @@ async function predict() {
     const prediction = await model.predict(posenetOutput);
 
     type = get_type()
-    if (type == -1){
-      for (let i = 0; i < maxPredictions; i++){
-        audio_list[i].pause();
-      }
-    }else{
-      // const classPrediction =
-      //   prediction[type].className + ": " + prediction[type].probability.toFixed(2);
-      // labelContainer.childNodes[0].innerHTML = classPrediction;
 
-      audio_list[type].play();
-      for (let i = 0; i < maxPredictions; i++){
-        if (type == i) continue;
-        audio_list[i].pause();
+    for (let i = 0; i < musicList.length; i++){
+      musicList[i].pause();
+    }
+    if (type != -1){
+      const classPrediction =
+        prediction[type].className + ": " + prediction[type].probability.toFixed(2);
+      labelContainer.childNodes[0].innerHTML = classPrediction;
+
+      if (type < musicList.length) {
+        musicList[type].play();
       }
     }
 
