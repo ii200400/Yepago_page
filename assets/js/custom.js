@@ -70,7 +70,7 @@ function selectFile(files, e){
             if ($(e.target).attr("id") == "musicDropZone") {
                 if ($.inArray(ext, ['mp3', 'mp4', 'wav', 'm4a']) >= 0) {
                     // 음악 파일 저장
-                    musicList[musicFileIndex] = files[i];
+                    musicList[musicFileIndex] = new Audio(URL.createObjectURL(files[i]));
 
                     // 음악 파일 목록 생성
                     addFileList(musicFileIndex, fileName, e);
@@ -263,6 +263,13 @@ async function predict() {
     for (let i = 0; i < musicList.length; i++){
       musicList[i].pause();
     }
+
+    // for (let i = 0; i < maxPredictions; i++) {
+    //     const classPrediction =
+    //         prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+    //     labelContainer.childNodes[i].innerHTML = classPrediction;
+    // }
+
     if (type != -1){
       const classPrediction =
         prediction[type].className + ": " + prediction[type].probability.toFixed(2);
