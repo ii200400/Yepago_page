@@ -4,7 +4,7 @@
   border-radius: 4px;
 }
 #canvas{
-  border: 2px solid #cc80ff;
+  border: 2px dashed #cc80ff;
   border-radius: 4px;
-  background-color: #f5e6ff;
+  /* background-color: #f5e6ff; */
 }

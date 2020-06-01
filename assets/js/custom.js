@@ -1,11 +1,11 @@
 // 음악 파일 리스트
-var musicList = new Array();
+let musicList = new Array();
 // 데이터 파일
-var metadataFile = null;
-var modelFile = null;
-var weightsFile = null;
+let metadataFile = null;
+let modelFile = null;
+let weightsFile = null;
 // 파일 고유번호
-var musicFileIndex = 0;
+let musicFileIndex = 0;
 // 카메라 시작 버튼
 let cameraEle = document.getElementById('camera');
 let dataDropZone = document.getElementById('dataDropZone');
@@ -59,7 +59,7 @@ function fileDropDown(){
 function selectFile(files, e){
     // 다중파일 등록
     if(files != null){
-        for(var i = 0; i < files.length; i++){
+        for(let i = 0; i < files.length; i++){
             // 파일 이름
             var fileName = files[i].name;
             var fileNameArr = fileName.split("\.");
@@ -136,7 +136,6 @@ function addFileList(fileIndex, fileName, e){
 
     html += "    <th class='py-1'>";
 
-    // TODO 음악 파일은 임시 재생이 가능하도록 바꾸기
     if ($(e.target).attr("id") == "musicDropZone"){
       html += fileName + "<a href='#' onclick='deleteMusicFile(" + fileIndex + "); return false;' class='btn text-danger py-0'>삭제</a>"
     }else{  //"dataDropZone"
@@ -212,8 +211,6 @@ async function init() {
     // load the model and metadata
     // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
     // Note: the pose library adds a tmPose object to your window (window.tmPose)
-
-    // TODO weight.bin 파일 추가하기
     model = await tmPose.loadFromFiles(modelFile, weightsFile, metadataFile);
     maxPredictions = model.getTotalClasses();
 
@@ -229,6 +226,7 @@ async function init() {
     const canvas = document.getElementById("canvas");
     canvas.width = size; canvas.height = size;
     ctx = canvas.getContext("2d");
+
     labelContainer = document.getElementById("label-container");
     for (let i = 0; i < maxPredictions; i++) { // and class labels
         labelContainer.appendChild(document.createElement("div"));
@@ -261,23 +259,23 @@ async function predict() {
     type = get_type()
 
     for (let i = 0; i < musicList.length; i++){
+      // 음악을 아예 정지하는 함수는 없다. 대신 현재 재생 위치를 0으로 하는 코드를 넣으면 된다.
       musicList[i].pause();
     }
 
-    // for (let i = 0; i < maxPredictions; i++) {
-    //     const classPrediction =
-    //         prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-    //     labelContainer.childNodes[i].innerHTML = classPrediction;
-    // }
+    for (let i = 0; i < maxPredictions; i++) {
+        let classPrediction = prediction[i].className;
+        if (i < musicList.length) { // TODO 바꾸기
+          musicTable = document.getElementById("musicFileTable");
+          musicName = musicTable.childNodes[i].innerHTML
+          classPrediction += "(" + musicName + ")";
+        }
+        classPrediction += ": " + prediction[i].probability.toFixed(2);
+        labelContainer.childNodes[i].innerHTML = classPrediction;
+    }
 
-    if (type != -1){
-      const classPrediction =
-        prediction[type].className + ": " + prediction[type].probability.toFixed(2);
-      labelContainer.childNodes[0].innerHTML = classPrediction;
-
-      if (type < musicList.length) {
-        musicList[type].play();
-      }
+    if (type != -1 && type < musicList.length){
+      musicList[type].play();
     }
 
     // finally draw the poses
