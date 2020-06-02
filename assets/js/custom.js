@@ -70,7 +70,7 @@ function selectFile(files, e){
             if ($(e.target).attr("id") == "musicDropZone") {
                 if ($.inArray(ext, ['mp3', 'mp4', 'wav', 'm4a']) >= 0) {
                     // 음악 파일 저장
-                    musicList[musicFileIndex] = new Audio(URL.createObjectURL(files[i]));
+                    musicList[musicFileIndex] = [new Audio(URL.createObjectURL(files[i])), fileName];
 
                     // 음악 파일 목록 생성
                     addFileList(musicFileIndex, fileName, e);
@@ -229,7 +229,7 @@ async function init() {
 
     labelContainer = document.getElementById("label-container");
     for (let i = 0; i < maxPredictions; i++) { // and class labels
-        labelContainer.appendChild(document.createElement("div"));
+        labelContainer.appendChild(document.createElement("h5"));
     }
 }
 
@@ -260,22 +260,22 @@ async function predict() {
 
     for (let i = 0; i < musicList.length; i++){
       // 음악을 아예 정지하는 함수는 없다. 대신 현재 재생 위치를 0으로 하는 코드를 넣으면 된다.
-      musicList[i].pause();
+      musicList[i][0].pause();
+      labelContainer.childNodes[i].style.color = "#000000";
     }
 
     for (let i = 0; i < maxPredictions; i++) {
-        let classPrediction = prediction[i].className;
-        if (i < musicList.length) { // TODO 바꾸기
-          musicTable = document.getElementById("musicFileTable");
-          musicName = musicTable.childNodes[i].innerHTML
-          classPrediction += "(" + musicName + ")";
+        let classPrediction = (i+1) + ". " + prediction[i].className;
+        if (i < musicList.length) {
+          classPrediction += "(" + musicList[i][1] + ")";
         }
         classPrediction += ": " + prediction[i].probability.toFixed(2);
         labelContainer.childNodes[i].innerHTML = classPrediction;
     }
 
     if (type != -1 && type < musicList.length){
-      musicList[type].play();
+      musicList[type][0].play();
+      labelContainer.childNodes[type].style.color = "#7a00cc";
     }
 
     // finally draw the poses
