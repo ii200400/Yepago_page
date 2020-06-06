@@ -205,14 +205,17 @@ function changeTitle(){
 // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
 // the link to your model provided by Teachable Machine export panel
-let model, webcam, ctx, labelContainer, maxPredictions;
+let model, webcam, ctx, labelContainer, maxPredictions, pairNumbers;
 
 async function init() {
     // load the model and metadata
     // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
     // Note: the pose library adds a tmPose object to your window (window.tmPose)
+
+    // url이 아닌 파일로 열기 위해서 함수를 loadFromFiles로 바꿈
     model = await tmPose.loadFromFiles(modelFile, weightsFile, metadataFile);
     maxPredictions = model.getTotalClasses();
+    pairNumbers = Math.min(maxPredictions, musicList.length);
 
     // Convenience function to setup a webcam
     const size = 400;
@@ -228,7 +231,7 @@ async function init() {
     ctx = canvas.getContext("2d");
 
     labelContainer = document.getElementById("label-container");
-    for (let i = 0; i < maxPredictions; i++) { // and class labels
+    for (let i = 0; i < pairNumbers; i++) { // and class labels
         labelContainer.appendChild(document.createElement("h5"));
     }
 
@@ -244,7 +247,7 @@ async function loop(timestamp) {
 async function predict() {
 
     function get_type(){
-      for (let i = 0; i < maxPredictions; i++){
+      for (let i = 0; i < pairNumbers; i++){
         if (prediction[i].probability.toFixed(2) >= 0.5){
           return i
         }
@@ -260,13 +263,13 @@ async function predict() {
 
     type = get_type()
 
-    for (let i = 0; i < musicList.length; i++){
+    for (let i = 0; i < pairNumbers; i++){
       // 음악을 아예 정지하는 함수는 없다. 대신 현재 재생 위치를 0으로 하는 코드를 넣으면 된다.
       musicList[i][0].pause();
       labelContainer.childNodes[i].style.color = "#000000";
     }
 
-    for (let i = 0; i < maxPredictions; i++) {
+    for (let i = 0; i < pairNumbers; i++) {
         let classPrediction = (i+1) + ". " + prediction[i].className;
         if (i < musicList.length) {
           classPrediction += "(" + musicList[i][1] + ")";
