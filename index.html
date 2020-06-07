@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>예파고 - 부제 넣어라</title>
+    <title>YEPAGO - 몸으로 표현하는 예술</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <!-- TODO https://junhobaik.github.io/meta-tag/
@@ -10,8 +10,7 @@
     <meta name="author" content="BootstrapBay">
     -->
 
-    <!-- TODO 구글 탭에서 나오는 작은 아이콘 설정하기 -->
-    <link href="assets/img/favicon.ico" rel="icon" type="image/png">
+    <link href="assets/img/logo.png" rel="icon" type="image/png">
 
     <link rel="stylesheet" href="./assets/vendor/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="./assets/css/lazy.css">
@@ -21,7 +20,6 @@
   </head>
   <body class="index">
     <nav class="navbar navbar-expand navbar-light bg-light fixed-top py-0">
-      <!-- TODO 로고 아이콘 및 링크 바꾸기 -->
       <a class="navbar-brand d-flex align-items-center" href="./index.html"><img src="assets/img/logo.png" alt="logo" class="mr-2 ml-5 my-0" height="80"></a>
 
       <div class="navbar-collapse text-center">
@@ -29,9 +27,10 @@
           <li class="nav-item mr-2 ml-2">
             <a class="nav-link" href="./index.html">소개</a>
           </li>
-          <li class="nav-item mr-2 ml-2">
+          <!-- TODO: 동영상 만들면 사용 -->
+          <!-- <li class="nav-item mr-2 ml-2">
             <a class="nav-link" href="./index.html">사용방법</a>
-          </li>
+          </li> -->
           <li class="nav-item mr-4 ml-4">
             <a class="btn btn-outline-info btn-pill active" href="./yepago.html">시작하기</a>
           </li>
@@ -75,11 +74,10 @@
 	            <h4>몸으로 표현하는 예술</h4>
 	          </div>
 
-            <!-- TODO 이미지 재대로 넣자. -->
             <div class="credits">
 							<p class="text-info mb-0 small my-1">Made with <span class="text-danger"><i class="fas fa-heart"></i></span> by</p>
               <img src="assets/img/TM_logo.png" alt="Teachable Machine" class="bg-info" width="25">
-              <img src="assets/img/bb_logo_white.png" class="bg-info" alt="Lazy Kit" width="150">
+              <img src="assets/img/bootstrap-solid.svg" alt="Lazy Kit" width="25">
               <p class="text-info mb-0 small my-1">and more</p>
             </div>
 
@@ -93,8 +91,15 @@
   	    <div class="row">
   		    <div class="col-lg-12 text-center">
             <h1>예파고란?</h1>
-                <img src="assets/img/dog-3.jpg" alt="Raised circle image" class="img-fluid rounded shadow-lg my-3" style="width: 700px;">
-            <p class="lead">아이고 드디어 이미지 잘 넣었고 <br /> 복붙하는 일만 남았다아~ :) <br /> 아 폰트도 넣어야즤!</p>
+              <img src="assets/img/robot.png" alt="Raised circle image" class="img-fluid rounded shadow-lg my-3" style="width: auto; max-height:400px;">
+            <p class="lead">
+              <strong>
+                <!-- 사람들은 말과 행동을 통해서 스스로를 표현합니다.<br/>
+                말이 가장 큰 영향을 끼치지만 행동또한 적지 않게 영향을 받습니다.<br/> -->
+                예파고는 행동만으로 자신을 표현하는 것을 돕는 자세인식 AI입니다.<br/>
+                '나'를 움직임으로만 표현하는 예술과 AI의 대명사인 알파고를 합성하여 예파고라고 부르게 되었습니다.
+              </strong>
+            </p>
   		    </div>
   	    </div>
       </div>
@@ -111,34 +116,38 @@
                 <img src="assets/img/explain1.PNG" alt="Raised circle image" class="img-fluid rounded shadow-lg autoSize my-3">
                 <p><h4>1</h4></p>
                 <p class="lead">
-                  <a href="https://teachablemachine.withgoogle.com/" target="_blank" class="text-info">구글 teachable machine</a>
-                  에서 모델을 만들어서 다운로드 합니다.<br />
+                  <strong>
+                    <a href="https://teachablemachine.withgoogle.com/" target="_blank" class="text-info">구글 teachable machine</a>
+                    에서 자세를 인식하는 AI을 만들어서 다운로드 합니다.<br />
+                  </strong>
                 </p>
                 <!-- TODO: 동영상을 넣거나 빼거나. -->
-                <a href="#" target="_blank" class="text-info">TM 모델 제작 동영상</a>
+                <!-- <a href="#" target="_blank" class="text-info">TM 모델 제작 동영상</a> -->
               </div>
 
               <div class="col-sm-12 col-md-4">
                 <img src="assets/img/explain2.jfif" alt="Raised circle image" class="img-fluid rounded shadow-lg autoSize my-3">
                 <p><h4>2</h4></p>
                 <p class="lead">
-                  핸드폰으로 녹음을 하거나 인터넷에서 다운로드를 받아 사운드 파일을 준비합니다.
+                  <strong>
+                    핸드폰으로 녹음을 하거나 인터넷에서 다운로드를 받아 사운드 파일을 준비합니다.
+                  </strong>
                 </p>
                 <!-- TODO: 동영상을 넣거나 빼거나. -->
                 <a href="http://soundbible.com/" target="_blank" class="text-info">무료 사운드 다운로드 홈페이지</a>
-                <br/><a href="#" target="_blank" class="text-info">음악 파일 제작 동영상</a>
+                <!-- <br/><a href="#" target="_blank" class="text-info">음악 파일 제작 동영상</a> -->
               </div>
 
               <div class="col-sm-12 col-md-4">
-                <img src="assets/img/dog-3.jpg" alt="Raised circle image" class="img-fluid rounded shadow-lg autoSize my-3">
+                <img src="assets/img/example1.PNG" alt="Raised circle image" class="img-fluid rounded shadow-lg autoSize my-3">
                 <p><h4>3</h4></p>
                 <p class="lead">
-                  아이고 드디어 이미지 잘 넣었고 <br />
-                  복붙하는 일만 남았다아~ :) <br />
-                  아 폰트도 넣어야즤!
+                  <strong>
+                    AI와 사운드 파일을 활용하여 재미있게 놀아봅니다!
+                  </strong>
                 </p>
                 <!-- TODO: 동영상을 넣거나 빼거나. -->
-                <a href="#" target="_blank" class="text-info">예파고 사용 방법 동영상</a>
+                <!-- <a href="#" target="_blank" class="text-info">예파고 사용 방법 동영상</a> -->
               </div>
             </div>
   		    </div>
@@ -152,9 +161,7 @@
   		    <div class="col-lg-12 text-center">
             <h4>THANKS TO</h4>
             <img src="assets/img/helpers.jpg" alt="Raised circle image" class="img-fluid rounded shadow-lg my-3" style="width: 500px;">
-            <p class="lead">
-              임영선 / 우선영 / 임미영 / 임영이
-            </p>
+            <!-- <p class="lead">임영선 / 우선영 / 임미영 / 임영이</p> -->
   		    </div>
   	    </div>
       </div>

@@ -3,11 +3,10 @@
   background-color: #f5e6ff;
   border-radius: 4px;
 }
-#canvas{
+/* #canvas{
   border: 2px dashed #cc80ff;
   border-radius: 4px;
-  /* background-color: #f5e6ff; */
-}
+} */
 .autoSize {
   width: 100%;
   height: auto !important;
