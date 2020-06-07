@@ -158,10 +158,13 @@ function addFileList(fileIndex, fileName, e){
 // 음악 파일 삭제
 function deleteMusicFile(fIndex){
     // 음악 파일 배열에서 삭제
-    delete musicList[fIndex];
+    musicList.splice(fIndex, 1);
 
     // 음악 파일 테이블 목록에서 삭제
     $("#musicFileTr_" + fIndex).remove();
+
+    // 인덱스 낮추기
+    musicFileIndex--;
 
     // dropzone과 카메라 버튼의 타이틀 수정
     changeTitle()
